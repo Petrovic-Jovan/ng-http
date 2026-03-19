@@ -17,13 +17,19 @@ export class AvailablePlacesComponent implements OnInit {
   private httpClient = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
 
+  isLoading = signal(true);
+
   ngOnInit() {
+    this.isLoading.set(true);
     const subscription = this.httpClient
       .get<{ places: Place[] }>('http://localhost:3000/places')
       .subscribe({
         next: (resData) => {
           console.log(resData);
           this.places.set(resData.places);
+        },
+        complete: () => {
+          this.isLoading.set(false);
         },
       });
 
