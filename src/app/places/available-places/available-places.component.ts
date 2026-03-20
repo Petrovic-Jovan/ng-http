@@ -22,6 +22,7 @@ export class AvailablePlacesComponent implements OnInit {
   // error signal, initial value is an empty string
   error = signal('');
 
+  // On initialzation of the component, we fetch the available places from the backend
   ngOnInit() {
     this.isLoading.set(true);
     const subscription = this.httpClient
@@ -53,5 +54,16 @@ export class AvailablePlacesComponent implements OnInit {
     this.destroyRef.onDestroy(() => {
       subscription.unsubscribe();
     });
+  }
+
+  // When place is selected, we send put request to the server to update selected places
+  onSelectPlace(place: Place) {
+    const subscription = this.httpClient
+      .put('http://localhost:3000/user-places', { placeId: place.id })
+      .subscribe({
+        next: (resData) => {
+          console.log(resData);
+        },
+      });
   }
 }

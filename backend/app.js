@@ -22,7 +22,7 @@ app.get("/places", async (req, res) => {
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
   // Simulate a server error 500
-  res.status(500).json({ message: "Error fetching places" });
+  // res.status(500).json({ message: "Error fetching places" });
 
   const fileContent = await fs.readFile("./data/places.json");
 
