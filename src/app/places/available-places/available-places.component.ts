@@ -18,6 +18,8 @@ export class AvailablePlacesComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   isLoading = signal(true);
+  // error signal, initial value is an empty string
+  error = signal('');
 
   ngOnInit() {
     this.isLoading.set(true);
@@ -27,6 +29,10 @@ export class AvailablePlacesComponent implements OnInit {
         next: (resData) => {
           console.log(resData);
           this.places.set(resData.places);
+        },
+        error: (error) => {
+          console.error(error);
+          this.error.set(error.message);
         },
         complete: () => {
           this.isLoading.set(false);

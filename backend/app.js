@@ -21,6 +21,9 @@ app.use((req, res, next) => {
 app.get("/places", async (req, res) => {
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
+  // Simulate a server error 500
+  res.status(500).json({ message: "Error fetching places" });
+
   const fileContent = await fs.readFile("./data/places.json");
 
   const placesData = JSON.parse(fileContent);
@@ -55,7 +58,7 @@ app.put("/user-places", async (req, res) => {
 
   await fs.writeFile(
     "./data/user-places.json",
-    JSON.stringify(updatedUserPlaces)
+    JSON.stringify(updatedUserPlaces),
   );
 
   res.status(200).json({ userPlaces: updatedUserPlaces });
@@ -77,7 +80,7 @@ app.delete("/user-places/:id", async (req, res) => {
 
   await fs.writeFile(
     "./data/user-places.json",
-    JSON.stringify(updatedUserPlaces)
+    JSON.stringify(updatedUserPlaces),
   );
 
   res.status(200).json({ userPlaces: updatedUserPlaces });
