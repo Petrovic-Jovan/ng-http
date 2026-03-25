@@ -33,7 +33,10 @@ export class PlacesService {
 
   addPlaceToUserPlaces(place: Place) {
     const previosUserPlaces = this.userPlaces();
-    this.userPlaces.set([...previosUserPlaces, place]);
+
+    if (!previosUserPlaces.some((p) => p.id === place.id)) {
+      this.userPlaces.set([...previosUserPlaces, place]);
+    }
     return this.httpClient
       .put('http://localhost:3000/user-places', {
         placeId: place.id,
@@ -41,6 +44,7 @@ export class PlacesService {
       .pipe(
         catchError((error) => {
           this.userPlaces.set(previosUserPlaces);
+          // catchError requires us to return an observable, so we return an error observable with a user-friendly error message
           return throwError(() => new Error('Failed to store selected place.'));
         }),
       );
