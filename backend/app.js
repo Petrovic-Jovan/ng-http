@@ -40,6 +40,8 @@ app.get("/user-places", async (req, res) => {
 });
 
 app.put("/user-places", async (req, res) => {
+  return res.status(500).json({ message: "Error adding place to user places" });
+
   const placeId = req.body.placeId;
 
   const fileContent = await fs.readFile("./data/places.json");

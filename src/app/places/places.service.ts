@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, map, pipe, tap, throwError } from 'rxjs';
 
 import { Place } from './place.model';
 
@@ -8,9 +8,8 @@ import { Place } from './place.model';
   providedIn: 'root',
 })
 export class PlacesService {
-  private userPlaces = signal<Place[]>([]);
-
   private httpClient = inject(HttpClient);
+  private userPlaces = signal<Place[]>([]);
 
   loadedUserPlaces = this.userPlaces.asReadonly();
 
@@ -25,13 +24,26 @@ export class PlacesService {
     return this.fetchPlaces(
       'http://localhost:3000/user-places',
       'Something went wrong fetching your favorite places. Please try again later.',
+    ).pipe(
+      tap({
+        next: (userPlaces) => this.userPlaces.set(userPlaces),
+      }),
     );
   }
 
   addPlaceToUserPlaces(place: Place) {
-    return this.httpClient.put('http://localhost:3000/user-places', {
-      placeId: place.id,
-    });
+    const previosUserPlaces = this.userPlaces();
+    this.userPlaces.set([...previosUserPlaces, place]);
+    return this.httpClient
+      .put('http://localhost:3000/user-places', {
+        placeId: place.id,
+      })
+      .pipe(
+        catchError((error) => {
+          this.userPlaces.set(previosUserPlaces);
+          return throwError(() => new Error('Failed to store selected place.'));
+        }),
+      );
   }
 
   removeUserPlace(place: Place) {}
