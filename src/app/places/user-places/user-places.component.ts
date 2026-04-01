@@ -38,4 +38,12 @@ export class UserPlacesComponent {
       subscription.unsubscribe();
     });
   }
+
+  // This method should delete place from user places in backend and update the list of user places in the UI
+  onSelectPlace($event: Place) {
+    const subscription = this.placesService.removeUserPlace($event).subscribe();
+    this.destroyRef.onDestroy(() => {
+      subscription.unsubscribe();
+    });
+  }
 }

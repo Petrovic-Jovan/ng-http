@@ -55,7 +55,25 @@ export class PlacesService {
       );
   }
 
-  removeUserPlace(place: Place) {}
+  removeUserPlace(place: Place) {
+    const previousUserPlaces = this.userPlaces();
+    if (previousUserPlaces.some((p) => p.id === place.id)) {
+      this.userPlaces.set(previousUserPlaces.filter((p) => p.id !== place.id));
+    }
+    return this.httpClient
+      .delete('http://localhost:3000/user-places/' + place.id)
+      .pipe(
+        catchError((error) => {
+          this.userPlaces.set(previousUserPlaces);
+          this.errorService.showError(
+            'Failed to remove place from your places. Please try again later.',
+          );
+          return throwError(
+            () => new Error('Failed to remove place from your places.'),
+          );
+        }),
+      );
+  }
 
   fetchPlaces(url: string, errorMessage: string) {
     return this.httpClient.get<{ places: Place[] }>(url).pipe(

@@ -41,7 +41,7 @@ app.get("/user-places", async (req, res) => {
 
 app.put("/user-places", async (req, res) => {
   // Simulate a server error 500
-  return res.status(500).json({ message: "Error adding place to user places" });
+  // return res.status(500).json({ message: "Error adding place to user places" });
 
   const placeId = req.body.placeId;
 
@@ -69,6 +69,9 @@ app.put("/user-places", async (req, res) => {
 
 app.delete("/user-places/:id", async (req, res) => {
   const placeId = req.params.id;
+
+  // simulate a server error 500
+  // return res.status(500).json({ message: "Error removing place from user places" });
 
   const userPlacesFileContent = await fs.readFile("./data/user-places.json");
   const userPlacesData = JSON.parse(userPlacesFileContent);
