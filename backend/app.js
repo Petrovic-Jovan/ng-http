@@ -41,7 +41,7 @@ app.get("/user-places", async (req, res) => {
 
 app.put("/user-places", async (req, res) => {
   // Simulate a server error 500
-  // return res.status(500).json({ message: "Error adding place to user places" });
+  return res.status(500).json({ message: "Error adding place to user places" });
 
   const placeId = req.body.placeId;
 
