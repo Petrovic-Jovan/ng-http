@@ -12,9 +12,14 @@ function loggingInterceptor(
   request: HttpRequest<unknown>,
   next: HttpHandlerFn,
 ) {
+  // Clone the request to add the new header.
+  // By setting these headers, backend will respond with an error, which is expected for this demo.
+  const req = request.clone({
+    headers: request.headers.set('X-DEBUG', 'TESTING'),
+  });
   console.log('[Outgoing Request!] ' + request.url);
   console.log(request);
-  return next(request);
+  return next(req);
 }
 
 bootstrapApplication(AppComponent, {
