@@ -1,8 +1,22 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 
 import { AppComponent } from './app/app.component';
-import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpHandlerFn,
+  HttpRequest,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 
-bootstrapApplication(AppComponent, { providers: [provideHttpClient()] }).catch(
-  (err) => console.error(err),
-);
+function loggingInterceptor(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+) {
+  console.log('[Outgoing Request!] ' + request.url);
+  console.log(request);
+  return next(request);
+}
+
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient(withInterceptors([loggingInterceptor]))],
+}).catch((err) => console.error(err));
